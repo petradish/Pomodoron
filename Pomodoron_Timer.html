@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+body {
+  background: #16436A;
+  font-family: geneva;
+  text-align: center
+ }
+ 
+ h1 {
+  color: #BFAAE2;
+  font-family: verdana;
+  font-size: 60px;
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 15px;
+ }
+ h2 {
+  color: #FFB53C;
+  font-family: geneva;
+  font-size: 30px;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 20px;
+ }
+ h3 {
+  font-size: 18px;
+  width: 50%;
+  display: inline-block;
+  text-align: center;
+  color: #FFD3E4;
+ }
+ button {
+ background-color: #A9E1BA;
+ border: none;
+ color: #16436A;
+ padding: 20px;
+ width: 35%;
+ text-align: center;
+ text-decoration: none;
+ display: inline-block;
+ font-size: 20px;
+ margin: 4px 2px;
+ cursor: pointer;
+ border-radius: 8px;
+}
+ #countdown {
+  width: 800px;
+  margin: 0 auto;
+ }
+ #clock span{
+  float: left;
+  text-align: center;
+  font-size: 80px;
+  margin: 0 2.5%;
+  color: #16436A;
+  padding: 15px;
+  width: 28%;
+  border-radius: 20px;
+  box-sizing: border-box;
+ }
+ #clock span:nth-child(1) {
+  background: #BFAAE2
+ }
+ #clock span:nth-child(2) {
+  background: #FFB53C
+ }
+ #clock span:nth-child(3) {
+  background: #FFD3E4;
+ }
+ #clock:after {
+  content: "";
+  display: block;
+  clear: both
+ }
+ 
+ #units span{
+  float: left;
+  width: 33%;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #A9E1BA;
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 2px;
+ }
+ Lavender: #BFAAE2
+ Dark Blue: #16436A
+ Green: #A9E1BA
+ Tangerine: #FFB53C
+ Pink: #FFD3E4
+ 
+ Innocence palette: 
+ Pink: #EECCDD
+ Purple:  #484D91
+ Icy White:  #E1ECF2
+</style>
+</head>
+<body>
+<h1>POMODORO(N) TIMER</h1>
+<h3 id = "intro">In Ancient Greek, the word δῶρον (doron) means gift! Choose Pomodoron for the gift of an oracular pronouncement with each study break!</h3>
+<div id= "message"></div>
+<div id = "countdown">
+  <center>
+<div id = "clock"></div>
+<div id = "units">
+</div>
+</center>
+</div>
+<!-- <button id="start">START OVER</button> -->
+<button onclick= timer(countdown,true)>PLAIN OL' POMODORO!</button>
+<button onclick= timer(countdown,false)>POMODORON: PYTHIAN PROPHECIES</button>
+<script>
+// object that stores 'subject' strings inside of its values
+const subjectGenieStrings = {
+ 1: 'The puppy',
+ 2: 'The person',
+ 3: 'The professor',
+ 4: 'The doctor',
+ 5: 'The software engineer',
+ 6: 'The turtle',
+ 7: 'A panda',
+ 8: 'Ryan'
+};
+// object that stores 'verb' strings inside of its values
+const verbGenieStrings = {
+ 1: 'solves',
+ 2: 'breaks',
+ 3: 'laughs',
+ 4: 'lectures',
+ 5: 'eats',
+ 6: 'sits',
+ 7: 'waddles',
+ 8: 'falls',
+ 9: 'levitates'
+};
+// object that stores 'object' strings inside of its values
+const objectGenieStrings = {
+ 1: 'everything in sight',
+ 2: 'all of the puzzles',
+ 3: 'because that\'s their job',
+ 4: 'the equipment',
+ 5: 'through the ice',
+ 6: 'into the pool',
+ 7: 'into a firecracker',
+ 8: 'lots of ramen',
+ 9: 'to the moon',
+ 10: 'across the road'
+};
+// const index = Math.floor(Math.random() * quoteArray.length)
+const arrayOfGenieObjs = [subjectGenieStrings, verbGenieStrings, objectGenieStrings];
+const start = document.getElementById('start');
+function timer(time, option){
+ let countdown = prompt("How many hours would you like to study today?", "1");
+ while (isNaN(countdown)){
+  countdown = prompt("The Pythian priestess doesn't recognize that number. Please enter a number above 0.", "1");
+ }
+
+ countdown = countdown * 60 * 60 * 1000
+ time = countdown;
+ let timePassed = 0;
+ let breakTime = false;
+ const fortyFiveMinuteMark = 45*60*1000
+ const fifteenMinutes = 15*60*1000
+ 
+ document.getElementById("message").innerHTML = '';
+ const timerId = setInterval(function(){
+//  console.log(time); //this can be viewed in the chrome developer tools
+ //need an hours const for greater than 1 hour input
+ const hour = Math.floor((time/(1000*60*60)) % 24) ;
+ const min = Math.floor((time/1000/60) % 60);
+ const sec = Math.floor((time/1000) % 60) ; 
+ 
+ document.getElementById("clock").innerHTML = '<span>' + `${hour}` + '</span>'
+          + '<span>' + `${min}` + '</span>'
+          + '<span>' + `${sec}` + '</span>';
+          
+ document.getElementById("units").innerHTML = 
+   '<span>Hours</span>'
+  + '<span>Minutes</span>'
+  + '<span>Seconds</span>';
+ //timer expired! show timer expired message
+ if (time <= 0) {    
+  document.getElementById("message").innerHTML = '<h2><embed src="http://www.slspencer.com/Sounds/Various/Gong-deep.wav" hidden="true" autostart="true" loop="1">Time Expired! Hit Start Again!</h2>';
+  clearInterval(timerId);
+ }
+ //after 15 min break, message changes to "go back to study"
+ if (time !== 0 && timePassed >= fifteenMinutes && breakTime===true) {    
+  //display clock and message
+  document.getElementById("clock").innerHTML = '<span>' + '0' + '</span>'
+          + '<span>' + `${min}` + '</span>'
+          + '<span>' + `${sec}` + '</span>';
+  document.getElementById("units").innerHTML = 
+   '<span>Hours</span>'
+  + '<span>Minutes</span>'
+  + '<span>Seconds</span>';
+  document.getElementById("message").innerHTML = '<h2><embed src="http://www.slspencer.com/Sounds/Various/Gong-deep.wav" hidden="true" autostart="true" loop="1">Go back to study!</h2>'; 
+  timePassed = 0;
+  breakTime = false;
+ } 
+ //1# when timePassed reaches the first 45minute mark
+ //display the first message
+ //clock still runs
+ if (timePassed >= fortyFiveMinuteMark) {    
+  
+  //if option is true, return regular quote
+  if(option) {
+   //display clock and message
+   document.getElementById("clock").innerHTML = '<span>' + '0' + '</span>'
+          + '<span>' + `${min}` + '</span>'
+          + '<span>' + `${sec}` + '</span>';
+   document.getElementById("units").innerHTML = 
+   '<span>Hours</span>'
+  + '<span>Minutes</span>'
+  + '<span>Seconds</span>';
+   document.getElementById("message").innerHTML = '<h2><embed src="http://www.slspencer.com/Sounds/Various/Gong-deep.wav" hidden="true" autostart="true" loop="1">Congratulations!!! You have just spent 45 minutes studying JavaScript, it is now time for a well deserved coffee break!!!!</h2>'; 
+  } 
+  //if option is falsy, return random generated quote
+  else {
+   // this calculates the length of every genie object
+   // returns the lengths for each into a new array 
+   const lengthOfGenieObjs = arrayOfGenieObjs.map( currObj => Object.keys(currObj).length);
+   // for each genie obj, calculates a random value for each array position into new array 
+   const randomValuesForGenie = lengthOfGenieObjs.map( currVal => (Math.floor(Math.random() * (currVal - 2)) + 1));
+   // outputs a new string from the genie objects and random value assignments
+   const genieStringOutput = `${subjectGenieStrings[randomValuesForGenie[0]]} ${verbGenieStrings[randomValuesForGenie[1]]} ${objectGenieStrings[randomValuesForGenie[2]]}.`;
+   //display clock and message
+   document.getElementById("clock").innerHTML = '<span>' + '0' + '</span>'
+          + '<span>' + `${min}` + '</span>'
+          + '<span>' + `${sec}` + '</span>';
+   document.getElementById("units").innerHTML = 
+   '<span>Hours</span>'
+  + '<span>Minutes</span>'
+  + '<span>Seconds</span>'
+   document.getElementById("message").innerHTML = '<h2><embed src="http://www.slspencer.com/Sounds/Various/Gong-deep.wav" hidden="true" autostart="true" loop="1">' + genieStringOutput + '</h2>'; 
+  }
+ //set breakTime to true indicating breaktime
+  breakTime = true;
+ //reset timePassed to 0 to use this to size how much break time passed
+  timePassed = 0;
+ } 
+ //decrement total timer by 1sec, increment timePassed by 1 sec
+ time -= 1000;
+ timePassed += 1000;
+}, 1000); //1000ms. = 1sec.
+
+}
+</script>
+</body>
+</html>
